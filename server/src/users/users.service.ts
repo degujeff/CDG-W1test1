@@ -11,12 +11,13 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) { }
 
-  
+
   async create(createUserDto: CreateUserDto) {
-   
-    const newUser = await this.usersRepository.save(createUserDto);
-    console.log('✨ บันทึกสำเร็จ! ID ใหม่คือ:', newUser.id);
-    return newUser; // ส่งข้อมูลที่ได้กลับไป
+
+    //const newUser = 
+    await this.usersRepository.save(createUserDto);
+    // console.log('✨ บันทึกสำเร็จ! ID ใหม่คือ:', newUser.id);
+    // return newUser; // ส่งข้อมูลที่ได้กลับไป
   }
 
   async findAll() {

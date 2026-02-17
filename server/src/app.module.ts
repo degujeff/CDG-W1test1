@@ -11,7 +11,7 @@ import { UsersModule } from './users/users.module';
       host: 'localhost',
       port: 3306,
       username: 'jeff',             // ✅ ตรงกับ docker-compose
-      password: '!!!!!!!!!####$%%$$@$#@#!@$@#!@$@#$@',     // ✅ ตรงเป๊ะตามที่คุณตั้ง
+      password: '1111111',     // ✅ ตรงเป๊ะตามที่คุณตั้ง
       database: 'mydb',             // ✅ ชื่อ Database ของคุณ
       autoLoadEntities: true,       // ช่วยโหลดตารางให้อัตโนมัติ
       synchronize: true,            // สร้างตารางให้เอง (ใช้ตอน Dev)
