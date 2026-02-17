@@ -3,6 +3,7 @@
 import { ref } from 'vue';
 import pdfUtils from '../utils/pdf'; 
 import images from '../utils/image.json';
+import Swal from 'sweetalert2';
 
 // 1. เตรียมชื่อเดือนภาษาไทย
 const thaiMonths = [
@@ -69,16 +70,7 @@ const form = ref({
   grade: '4.00'
 });
 
-// 3. ฟังก์ชันแปลงวันที่จากปฏิทิน (เมื่อ user เลือกใหม่)
-const handleDateSelect = (event, fieldName) => {
-  const inputDate = event.target.value; // ได้ค่า 2026-02-17
-  if (inputDate) {
-    const [year, month, day] = inputDate.split('-');
-    const thaiYear = parseInt(year) + 543;
-    const monthName = thaiMonths[parseInt(month) - 1];
-    form.value[fieldName] = `${parseInt(day)} ${monthName} ${thaiYear}`;
-  }
-};
+
 // --- ฟังก์ชันสำหรับวันเกิด (แบบตัวเลข: 22/10/2550) ---
 const handleDOBSelect = (event) => {
   const inputDate = event.target.value; 
@@ -115,9 +107,41 @@ const formatPhone = (event, fieldName) => {
   
   form.value[fieldName] = formatted;
 };
+//ตรวจสอบข้อมูล
+const validateForm = () => {
+  // สร้างรายการฟิลด์ที่จำเป็นต้องกรอก
+  const requiredFields = [
+    { key: 'fullName', label: 'ชื่อ-นามสกุล' },
+    { key: 'idCard', label: 'เลขประจำตัวประชาชน' },
+    { key: 'school', label: 'ชื่อสถาบันการศึกษา' },
+    { key: 'parentName', label: 'ชื่อ-สกุล มารดา' },
+    { key: 'parentPhone', label: 'เบอร์โทรศัพท์มือถือ' },
+    { key: 'school', label: 'มหาวิทยาลัย' }
+
+  ];
+  for (const field of requiredFields) {
+    if (!form.value[field.key] || form.value[field.key].trim() === '') {
+      return field.label; 
+    }
+  }
+  return null; 
+};
 
 // 3. ฟังก์ชันสร้าง PDF (เหมือนคนเขียนใบสั่งงาน)
 const createMyPDF = () => {
+  const missingField = validateForm();
+
+  if (missingField) {
+    // 🚩 ถ้าข้อมูลไม่ครบ ให้แสดง SweetAlert2
+    Swal.fire({
+      icon: 'warning',
+      title: 'กรอกข้อมูลไม่ครบถ้วน',
+      text: `กรุณากรอกข้อมูลในช่อง "${missingField}" ให้เรียบร้อยก่อนสร้างเอกสาร`,
+      confirmButtonText: 'ตกลง',
+      confirmButtonColor: '#008000', // สีเขียวเดียวกับปุ่มของคุณ
+    });
+    return; // ⛔ หยุดการทำงาน ไม่ไปสร้าง PDF ต่อ
+  }
   const blueprint = {
     pageSize: 'A4',
     pageMargins: [50, 40, 50, 40], 
